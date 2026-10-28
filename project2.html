@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+
+<html lang="id">
+
+<head>
+    <title>Analisis Penjualan Warmindo - 2022 - Portofolio</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Header -->
+        <header id="header">
+            <a href="index.html" class="logo">Portofolio</a>
+        </header>
+
+        <!-- Main -->
+        <div id="main">
+
+            <!-- Post -->
+            <ul class="actions">
+                <li><a href="index.html" class="button">&larr; Kembali</a></li>
+            </ul>
+            <section class="post">
+                <header class="major">
+                    <h1>Analisis Penjualan Warmindo<br />2022</h1>
+                    <p>Merapikan 499 transaksi dengan Excel dan menyajikannya<br />
+                        dalam dashboard Tableau untuk melihat menu, hari, dan pola pembayaran yang menggerakkan omzet.
+                    </p>
+                </header>
+
+                <!-- Ganti dengan screenshot dashboard Tableau Anda -->
+                <div class="image main"><img src="images/warmindo.PNG"
+                        alt="Dashboard Tableau analisis penjualan Warmindo 2022" /></div>
+
+                <h2>Ringkasan</h2>
+                <p>Dataset berisi 499 baris transaksi penjualan sebuah warmindo selama Januari sampai Agustus 2022,
+                    dengan 18 varian menu dan 99 pelanggan. Warung kecil seperti ini biasanya hanya mencatat penjualan
+                    tanpa dianalisis, sehingga pemilik sulit tahu menu mana yang paling laku, kapan warung ramai
+                    atau sepi, dan bagaimana pelanggan membayar. Saya merapikan datanya di Excel, merangkumnya
+                    dengan pivot table, lalu menampilkannya di dashboard Tableau beserta rekomendasi bisnis.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>Peran</strong></td>
+                                <td>Data analyst (pembersihan, analisis, visualisasi)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Alat</strong></td>
+                                <td>Microsoft Excel (data cleaning, pivot table), Tableau</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data</strong></td>
+                                <td>499 transaksi, 975 porsi terjual, total omzet Rp9.202.000, periode
+                                    Januari&ndash;Agustus 2022</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>1. Membersihkan data dengan Excel</h2>
+                <p>Data mentah tidak saya ubah langsung. Saya menyimpannya di sheet <code>Penjualan warmindo</code>,
+                    lalu bekerja di sheet salinan <code>data clean</code>, sehingga data asli tetap utuh dan
+                    setiap perubahan bisa ditelusuri.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Masalah</th>
+                                <th>Kondisi awal</th>
+                                <th>Perlakuan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Penulisan nama produk tidak seragam</td>
+                                <td>Ada yang ditulis <code>indomie Kari Ayam</code> dan <code>Indomie Kari Ayam</code>
+                                </td>
+                                <td>Diseragamkan agar satu menu tidak terhitung sebagai dua produk di pivot table.
+                                    Hasilnya 18 menu.</td>
+                            </tr>
+                            <tr>
+                                <td>Tidak ada informasi hari</td>
+                                <td>Hanya ada tanggal transaksi</td>
+                                <td>Menambahkan kolom <code>Hari</code> dari tanggal transaksi untuk analisis pola
+                                    harian.</td>
+                            </tr>
+                            <tr>
+                                <td>Nilai penjualan perlu diverifikasi</td>
+                                <td>Nilai penjualan harus sama dengan harga jual &times; jumlah</td>
+                                <td>Menambahkan kolom <code>validasi nilai penjualan</code> untuk memeriksa
+                                    kesesuaiannya di setiap baris.</td>
+                            </tr>
+                            <tr>
+                                <td>Metode pembayaran terpecah</td>
+                                <td>QRIS terbagi menjadi OVO, GoPay, DANA, ShopeePay, dan lainnya, selain CASH</td>
+                                <td>Dikelompokkan menjadi QRIS dan tunai untuk melihat pergeseran ke pembayaran digital.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Gambar 2: screenshot data clean di Excel (opsional) -->
+                <span class="image fit"><img src="images/excel-cleaning.png"
+                        alt="Cuplikan sheet data clean di Excel dengan kolom Hari dan validasi nilai penjualan" /></span>
+                <p style="text-align: center;"> Diatas adalah data cleaning yang saya lakukan di Excel</p>
+
+                <p>Dua keputusan yang saya anggap penting:</p>
+                <ul>
+                    <li><strong>Menyimpan data asli.</strong> Pembersihan hanya dilakukan di sheet salinan, jadi tidak
+                        ada informasi yang hilang diam-diam.</li>
+                    <li><strong>Memvalidasi angka sebelum dianalisis.</strong> Kolom validasi memastikan omzet yang
+                        dilaporkan benar-benar berasal dari harga &times; jumlah, bukan dari input yang keliru.</li>
+                </ul>
+
+                <h2>2. Temuan analisis</h2>
+                <p>Total omzet sebesar <strong>Rp9,20 juta</strong> dari 499 transaksi dan 975 porsi. Rata-rata nilai
+                    transaksi sekitar <strong>Rp18.441</strong> (1,95 porsi per kunjungan). Variasinya antar bulan
+                    kecil, yaitu Rp17.574 sampai Rp19.640.</p>
+
+                <h3>Omzet bergerak karena jumlah kunjungan, bukan besar belanja</h3>
+                <p>Karena nilai per transaksi relatif stabil, naik-turunnya omzet bulanan lebih dipengaruhi
+                    banyaknya pelanggan yang datang:</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Omzet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Januari</td>
+                                <td>Rp1.072.000</td>
+                            </tr>
+                            <tr>
+                                <td>Februari</td>
+                                <td>Rp1.187.000</td>
+                            </tr>
+                            <tr>
+                                <td>Maret</td>
+                                <td>Rp1.051.000</td>
+                            </tr>
+                            <tr>
+                                <td>April</td>
+                                <td>Rp899.000</td>
+                            </tr>
+                            <tr>
+                                <td>Mei</td>
+                                <td>Rp1.346.000</td>
+                            </tr>
+                            <tr>
+                                <td>Juni</td>
+                                <td>Rp1.219.000</td>
+                            </tr>
+                            <tr>
+                                <td>Juli</td>
+                                <td>Rp1.446.000</td>
+                            </tr>
+                            <tr>
+                                <td>Agustus</td>
+                                <td>Rp982.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Puncak terjadi pada Juli (152 porsi dari 80 transaksi). Titik terendah terjadi pada April
+                    (95 porsi dari 49 transaksi), yang bertepatan dengan bulan Ramadan.</p>
+
+                <!-- Gambar 3: grafik tren bulanan dari Tableau (opsional) -->
+                <span class="image fit"><img src="images/tren-bulanan.png"
+                        alt="Grafik tren omzet per bulan Warmindo 2022" /></span>
+                <p style="text-align: center;"> Diatas adalah tren omzet per bulan yang saya buat di Tableau</p>
+
+                <h3>Temuan lain</h3>
+                <ul>
+                    <li><strong>Menu terlaris:</strong> Indomie Rasa Soto Betawi (Rp727 ribu), Soto Banjar Limau Kuit
+                        (Rp701 ribu), dan Kari Ayam (Rp677 ribu) mendominasi pemasukan. Menu dengan omzet terendah
+                        adalah Soto Mie (Rp330 ribu).</li>
+                    <li><strong>Mie kuah</strong> menyumbang sekitar 71% omzet (Rp6,57 juta), jauh di atas mie goreng
+                        (Rp2,64 juta).</li>
+                    <li><strong>Pola harian:</strong> Selasa (Rp1,66 juta) dan Senin (Rp1,54 juta) paling ramai.
+                        Kamis paling sepi dengan omzet sekitar Rp990 ribu.</li>
+                    <li><strong>Jenis pesanan:</strong> Dine-In (Rp4,87 juta) dan Delivery (Rp4,33 juta) hampir
+                        seimbang, jadi warung punya dua sumber pendapatan yang sama kuatnya.</li>
+                    <li><strong>Pembayaran:</strong> Sekitar 80,7% transaksi memakai QRIS dan hanya 19,3% tunai.</li>
+                </ul>
+
+                <h3>Rekomendasi bisnis</h3>
+                <ul>
+                    <li>Jadikan menu terlaris sebagai andalan di papan menu dan promosi digital. Menu yang kurang
+                        laku bisa dibundling dengan minuman.</li>
+                    <li>Buat promo khusus di hari sepi (Kamis) dan bulan sepi (Ramadan), serta siapkan stok dan
+                        kapasitas lebih saat bulan ramai seperti Juli.</li>
+                    <li>Fokus menambah frekuensi kunjungan dan nilai belanja per transaksi, misalnya lewat paket hemat
+                        atau menu tambahan.</li>
+                    <li>Jaga kualitas makanan saat dikemas untuk delivery, dan tingkatkan kenyamanan area makan di
+                        tempat.</li>
+                    <li>Pastikan jaringan internet dan kode QRIS selalu lancar, dan pertimbangkan promo cashback
+                        bersama penyedia dompet digital.</li>
+                </ul>
+
+                <h2>3. Dashboard Tableau</h2>
+                <p>Dashboard dibuat dari data hasil cleaning dan terdiri dari enam analisis:</p>
+                <ul>
+                    <li>Performa produk: omzet per menu.</li>
+                    <li>Tren per bulan dan tren per hari.</li>
+                    <li>Total omzet dibandingkan rata-rata nilai transaksi per bulan.</li>
+                    <li>Jenis layanan pesanan (Dine-In dan Delivery).</li>
+                    <li>Preferensi metode pembayaran.</li>
+                </ul>
+                <p>Keenam grafik disusun dalam satu story agar alurnya dari gambaran umum, ke detail, lalu ke
+                    rekomendasi.</p>
+
+                <ul class="actions">
+                    <!-- Ganti dengan tautan GitHub / Tableau Public proyek Warmindo Anda -->
+                    <li><a href="https://github.com/farrelru76/Project_Warmindo" class="button primary">Lihat
+                            lengkap Proyek Saya</a></li>
+                </ul>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <section class="split contact">
+                <section>
+                    <h3>Phone</h3>
+                    <p>085156075138</p>
+                </section>
+                <section>
+                    <h3>Email</h3>
+                    <p>farrelru76@gmail.com</p>
+                </section>
+                <section>
+                    <h3>Social</h3>
+                    <ul class="icons alt">
+                        <li><a href="https://www.instagram.com/farrel_rt1" class="icon brands fa-instagram"><span
+                                    class="label">Instagram</span></a></li>
+                        <li><a href="https://github.com/farrelru76" class="icon brands fa-github"><span
+                                    class="label">GitHub</span></a></li>
+                        <li><a href="https://www.linkedin.com/in/farrel-rizki-utama-866849267"
+                                class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                    </ul>
+                </section>
+            </section>
+        </footer>
+
+        <!-- Copyright -->
+        <div id="copyright">
+            <ul>
+                <li>&copy; Farrel Rizki Utama</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

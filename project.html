@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+
+<html lang="id">
+
+<head>
+    <title>Analisis Penjualan 2022–2025 - Portofolio</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Header -->
+        <header id="header">
+            <a href="index.html" class="logo">Portofolio</a>
+        </header>
+
+        <!-- Nav -->
+        <!--<nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">This is Massively</a></li>
+                <li class="active"><a href="generic.html">Generic Page</a></li>
+                <li><a href="elements.html">Elements Reference</a></li>
+            </ul>
+            <ul class="icons">
+                <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                <li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+            </ul>
+        </nav>-->
+
+        <!-- Main -->
+        <div id="main">
+
+            <!-- Post -->
+            <ul class="actions">
+                <li><a href="index.html" class="button">&larr; Kembali</a></li>
+            </ul>
+            <section class="post">
+                <header class="major">
+                    <h1>Analisis Penjualan<br />2022–2025</h1>
+                    <p>Membersihkan 18.000+ transaksi dengan SQL dan menyajikannya<br />
+                        dalam dashboard Power BI untuk melihat apa yang menggerakkan profit.</p>
+                </header>
+
+                <!-- Ganti dengan screenshot dashboard Power BI Anda -->
+                <div class="image main"><img src="images/dashboard-powerbi.png" alt="Dashboard Power BI analisis penjualan 2022–2025" /></div>
+
+                <h2>Ringkasan</h2>
+                <p>Dataset berisi 18.045 baris transaksi penjualan dari enam negara dengan 35 kolom. Datanya
+                    belum siap dianalisis: ada duplikat, penulisan kategori yang berbeda-beda, nilai kosong, dan
+                    angka yang tidak masuk akal. Saya membersihkannya dengan MySQL, menganalisis polanya, lalu
+                    menampilkan hasilnya di dashboard Power BI.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr><td><strong>Peran</strong></td><td>Data analyst (pembersihan, analisis, visualisasi)</td></tr>
+                            <tr><td><strong>Alat</strong></td><td>MySQL, Power BI, DAX</td></tr>
+                            <tr><td><strong>Data</strong></td><td>18.045 baris mentah menjadi 18.000 baris bersih, periode 2022–2025</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>1. Membersihkan data dengan SQL</h2>
+                <p>Data mentah tidak pernah saya ubah langsung. Saya bekerja di tabel salinan bertingkat
+                    (<code>sales2</code> &rarr; <code>sales_cleaning</code> &rarr; <code>sales_cleaning2</code>
+                    &rarr; <code>sales_final</code>), sehingga setiap perubahan bisa ditelusuri dan dibatalkan.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Masalah</th>
+                                <th>Sebelum</th>
+                                <th>Perlakuan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Baris duplikat</td>
+                                <td>45 duplikat penuh</td>
+                                <td><code>ROW_NUMBER() OVER (PARTITION BY ...)</code>, lalu hapus. Hasilnya 18.000 baris unik.</td>
+                            </tr>
+                            <tr>
+                                <td>Kategori tidak konsisten</td>
+                                <td>Gender 6 variasi, metode bayar 10, status order 8, region 14</td>
+                                <td><code>TRIM</code> dan <code>CASE</code> untuk menyeragamkan. Hasilnya 4, 7, 5, dan 11 nilai.</td>
+                            </tr>
+                            <tr>
+                                <td>Nilai kosong</td>
+                                <td>Rating 3.435, umur 218, nama produk 144</td>
+                                <td>Nama produk diisi dari <code>Product_ID</code>. Gender dan metode bayar menjadi <code>Unknown</code>. Nilai 0 pada rating dan umur menjadi <code>NULL</code>.</td>
+                            </tr>
+                            <tr>
+                                <td>Nilai tidak logis</td>
+                                <td>8 kuantitas &le; 0, 4 umur di luar 16–90, 3 diskon di atas 30%</td>
+                                <td>Dihitung ulang dari kolom yang saling terkait (sales, harga, diskon), atau diubah menjadi <code>NULL</code>.</td>
+                            </tr>
+                            <tr>
+                                <td>Profit tidak cocok</td>
+                                <td>Profit &ne; Sales &minus; Cost</td>
+                                <td>Dihitung ulang.</td>
+                            </tr>
+                            <tr>
+                                <td>Sales tidak cocok dengan harga &times; kuantitas</td>
+                                <td>65 baris</td>
+                                <td>Tidak dihapus, hanya diberi flag <code>is_sales_mismatch</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Gambar 2: screenshot query SQL (opsional) -->
+                <span class="image fit"><img src="images/sql-cleaning.png" alt="Cuplikan query SQL untuk menghapus duplikat dan standarisasi data" /></span>
+                <p style="text-align: center;"> Diatas adalah data cleaning yang saya lakukan di sql</p>
+
+                <span class="image fit"><img src="images/standardizing.png"
+                        alt="Cuplikan query SQL untuk menghapus duplikat dan standarisasi data" /></span>
+                <p style="text-align: center;"> Diatas adalah standarisasi data yang saya lakukan di sql</p>
+                <span class="image fit"><img src="images/Capture1.png"
+                        alt="Cuplikan query SQL untuk menghapus duplikat dan standarisasi data" /></span>
+                <span class="image fit"><img src="images/flag.png"
+                        alt="Cuplikan query SQL untuk menghapus duplikat dan standarisasi data" /></span>
+                <p style="text-align: center;"> Diatas adalah Kolom flag yang saya lakukan di sql</p>
+                
+                <p>Dua keputusan yang saya anggap penting:</p>
+                <ul>
+                    <li><strong>Memberi flag, bukan menghapus.</strong> Baris yang meragukan tetap ada dan bisa
+                        disaring, jadi tidak ada informasi yang hilang diam-diam.</li>
+                    <li><strong>Mendefinisikan pendapatan secara eksplisit.</strong> Kolom <code>is_revenue_order</code>
+                        hanya bernilai 1 untuk order berstatus Completed, Shipped, dan Processing. Order Cancelled
+                        dan Returned tidak ikut dihitung sebagai pendapatan.</li>
+                </ul>
+
+                <h2>2. Temuan analisis</h2>
+                <p>Pendapatan dihitung dari 15.510 transaksi yang memenuhi definisi di atas:
+                    <strong>USD 7,13 juta</strong> dengan margin profit sekitar <strong>20%</strong>.</p>
+
+                <h3>Diskon adalah penentu utama margin</h3>
+                <p>Margin hampir sama di semua tahun, channel, dan negara (sekitar 20%). Yang berbeda hanya
+                    ketika dipecah berdasarkan besar diskon:</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Diskon</th>
+                                <th>Margin profit</th>
+                                <th>Transaksi rugi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0%</td><td>25,1%</td><td>0%</td></tr>
+                            <tr><td>5%</td><td>20,9%</td><td>0%</td></tr>
+                            <tr><td>10%</td><td>16,8%</td><td>0%</td></tr>
+                            <tr><td>15%</td><td>11,8%</td><td>0,6%</td></tr>
+                            <tr><td>20%</td><td>6,2%</td><td>10,5%</td></tr>
+                            <tr><td>29%</td><td>0,6%</td><td>28,7%</td></tr>
+                            <tr><td>30%</td><td>-7,0%</td><td>85,7%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Setiap tambahan diskon menggerus margin. Di atas 15%, sebagian transaksi mulai merugi.
+                    Kode promo juga tidak menghasilkan margin yang lebih baik daripada transaksi tanpa promo
+                    (sekitar 20% di keduanya).</p>
+
+                <!-- Gambar 3: chart diskon vs margin (opsional) -->
+                <span class="image fit"><img src="images/diskon-vs-margin.png" alt="Grafik margin profit berdasarkan tingkat diskon" /></span>
+                <p style="text-align: center;"> Diatas adalah EDA yang saya lakukan di sql</p>
+
+                <h3>Temuan lain</h3>
+                <ul>
+                    <li><strong>Elektronik</strong> menyumbang sekitar 60% penjualan (USD 4,24 juta) dengan margin 19%.
+                        Appliances jauh lebih kecil, tetapi marginnya tertinggi (22%).</li>
+                    <li><strong>Penjualan 2025</strong> mencapai USD 2,00 juta, naik sekitar 21% dari 2024
+                        (USD 1,64 juta).</li>
+                    <li><strong>Retur</strong> terjadi pada 8,9% order dan <strong>pembatalan</strong> pada 5%. Alasan
+                        retur tersebar merata (keterlambatan, barang salah, rusak, cacat), sehingga tidak ada satu
+                        penyebab dominan.</li>
+                </ul>
+
+                <h2>3. Dashboard Power BI</h2>
+                <p>Dashboard dibuat dari data hasil cleaning dan terdiri dari:</p>
+                <ul>
+                    <li>Kartu KPI: total sales, total profit, margin profit, dan rating pelanggan.</li>
+                    <li>Grafik garis untuk tren sales dan profit dari waktu ke waktu.</li>
+                    <li>Grafik batang untuk sales dan profit per kategori produk dan per negara.</li>
+                    <li>Diagram lingkaran untuk komposisi channel penjualan.</li>
+                </ul>
+                <p>Kolom flag dari tahap SQL dipakai langsung sebagai filter, sehingga definisi pendapatan di
+                    dashboard sama dengan di database.</p>
+
+                <ul class="actions">
+                    <!-- Ganti # dengan tautan GitHub / file .pbix Anda -->
+                    <li><a href="https://github.com/farrelru76/Project_penjualan_2022-2025" class="button primary">Lihat lengkap Proyek Saya</a></li>
+                </ul>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <section class="split contact">
+                <section>
+                    <h3>Phone</h3>
+                    <p>085156075138</p>
+                </section>
+                <section>
+                    <h3>Email</h3>
+                    <p>farrelru76@gmail.com</p>
+                </section>
+                <section>
+                    <h3>Social</h3>
+                    <ul class="icons alt">
+                        <li><a href="https://www.instagram.com/farrel_rt1" class="icon brands fa-instagram"><span
+                                    class="label">Instagram</span></a></li>
+                        <li><a href="https://github.com/farrelru76" class="icon brands fa-github"><span
+                                    class="label">GitHub</span></a></li>
+                        <li><a href="https://www.linkedin.com/in/farrel-rizki-utama-866849267"
+                                class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                    </ul>
+                </section>
+            </section>
+        </footer>
+
+        <!-- Copyright -->
+        <div id="copyright">
+            <ul>
+                <li>&copy; Farrel Rizki Utama</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
